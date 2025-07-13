@@ -99,6 +99,13 @@ app.get("/movie/:name", (req: Request, res: Response) => {
   res.json(movie);
 });
 
+// ENDPOINT?file=Filme/Antigone/Antigone[GER].mp4
+app.get("/stream", (req: Request, res: Response)=>{
+  // Filme/Antigone/Antigone[GER].mp4
+  const {file}= req.query;
+  loadFile(path.join(BASE_DIRECTORY, file as string), req, res);
+})
+
 
 const PORT = 3000
 console.log("Listening to " + PORT);
