@@ -6,6 +6,7 @@ import path from "node:path";
 
 
 import { loadFile, streamFile } from "./streaming";
+import { fileOfTypes } from "./fileoperations";
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 
@@ -84,11 +85,11 @@ app.get("/movie/:name", (req: Request, res: Response) => {
   let allFiles = fs.readdirSync(path.join(BASE_DIRECTORY, "Filme", req.params.name), {recursive: true, withFileTypes: true});
   allFiles = allFiles.filter((file)=> {return !fs.statSync(path.join(file.parentPath, file.name)).isDirectory()});
 
-  const languages = allFiles.filter((file) => {return file.name.endsWith(".mp4")});
+  const languages = allFiles.filter((file) => {return fileOfTypes(file.name, [".mp4"])});
 
-  const subtitles = allFiles.filter((file) => {return file.name.endsWith(".vtt")});
+  const subtitles = allFiles.filter((file) => {return fileOfTypes(file.name, [".vtt"])});
 
-  const poster = allFiles.filter((file) => {return file.name.endsWith(".png") || file.name.endsWith(".jpg")})[0];
+  const poster = allFiles.filter((file) => {return fileOfTypes(file.name, [".png", ".jpg"])})[0];
 
 
   const movie: MovieData = {
@@ -117,6 +118,10 @@ app.get("/stream", (req: Request, res: Response)=>{
   // Filme/Antigone/Antigone[GER].mp4
   const {file}= req.query;
 
+  if(!fileOfTypes(file as string, [".mp4"])) {
+    res.status(403).send("This file format is not supported by this endpoint...");
+    return;
+  }
   if (!fileSecurityCheck(file as string, res)) return;
 
   loadFile(path.join(BASE_DIRECTORY, file as string), req, res);
@@ -127,7 +132,7 @@ app.get("/stream", (req: Request, res: Response)=>{
 app.get("/poster", (req: Request, res: Response) => {
   const {file} = req.query;
 
-  if(!(file as string).endsWith(".png") && !(file as string).endsWith(".jpg")) {
+  if(!fileOfTypes(file as string, [".png", ".jpg"])) {
     res.status(403).send("This file format is not supported by this endpoint...");
     return;
   }
