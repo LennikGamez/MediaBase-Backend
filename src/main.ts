@@ -4,6 +4,9 @@ import express from "express";
 import fs from "node:fs";
 import path from "node:path"; 
 
+
+import { loadFile, streamFile } from "./streaming";
+
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 
 function relativePath(path: string): string{
@@ -42,7 +45,7 @@ function mapStringToMediaType(str: string): MediaTypes{
   }
 }
 
-app.get("/library", (req: Request, res: Response) => {
+app.get("/library", (_req: Request, res: Response) => {
   // [{name: "FilmName", type: "MOVIE"}]
 
   const lib: LibEntry[] = [];
