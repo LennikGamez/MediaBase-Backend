@@ -6,6 +6,10 @@ import path from "node:path";
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 
+function relativePath(path: string): string{
+  return path.replace(BASE_DIRECTORY, '');
+}
+
 const app: Application = express();
 
 
@@ -82,9 +86,9 @@ app.get("/movie/:name", (req: Request, res: Response) => {
 
   const movie: MovieData = {
     name: req.params.name,
-    languages: languages.map((file) => {return {language: "Deutsch", path: path.join(file.parentPath, file.name)}}),
-    subtitles: subtitles.map((file) => {return {language: "Deutsch", path: path.join(file.parentPath, file.name)}}),
-    poster: path.join(poster.parentPath, poster.name)
+    languages: languages.map((file) => {return {language: "Deutsch", path: path.join(relativePath(file.parentPath), file.name)}}),
+    subtitles: subtitles.map((file) => {return {language: "Deutsch", path: path.join(relativePath(file.parentPath), file.name)}}),
+    poster: path.join(relativePath(poster.parentPath), poster.name)
     
   }
   
