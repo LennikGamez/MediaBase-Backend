@@ -9,6 +9,10 @@ import { loadFile, streamFile } from "./streaming";
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 
+function isFileInBaseDir(file: string){
+  const absolutePath = path.resolve(file);
+  return absolutePath.startsWith(BASE_DIRECTORY);
+}
 function relativePath(path: string): string{
   return path.replace(BASE_DIRECTORY, '');
 }
@@ -99,12 +103,38 @@ app.get("/movie/:name", (req: Request, res: Response) => {
   res.json(movie);
 });
 
+
+function fileSecurityCheck(file: string, res: Response): boolean{
+    if (!isFileInBaseDir(path.join(BASE_DIRECTORY, file as string))) {
+      res.sendStatus(403);
+      return false;
+  };
+  return true;
+}
+
 // ENDPOINT?file=Filme/Antigone/Antigone[GER].mp4
 app.get("/stream", (req: Request, res: Response)=>{
   // Filme/Antigone/Antigone[GER].mp4
   const {file}= req.query;
+
+  if (!fileSecurityCheck(file as string, res)) return;
+
   loadFile(path.join(BASE_DIRECTORY, file as string), req, res);
-})
+  
+});
+
+
+app.get("/poster", (req: Request, res: Response) => {
+  const {file} = req.query;
+
+  if(!(file as string).endsWith(".png") && !(file as string).endsWith(".jpg")) {
+    res.status(403).send("This file format is not supported by this endpoint...");
+    return;
+  }
+  if(!fileSecurityCheck(file as string, res)) return;
+
+  res.sendFile(path.join(BASE_DIRECTORY, file as string))
+});
 
 
 const PORT = 3000

@@ -17,6 +17,7 @@ export function streamFile(path: string, req: Request, res: Response, contentTyp
     const range = req.headers.range as string;
     if(!range){
         res.status(400).send("Requires Range header");
+        return;
     }
 
 
