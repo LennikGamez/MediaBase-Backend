@@ -1,0 +1,15 @@
+{
+  "name": "mediabasebackend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc && node dist/main.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
