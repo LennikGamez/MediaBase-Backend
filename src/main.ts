@@ -6,7 +6,7 @@ import path from "node:path";
 
 
 import { loadFile, streamFile } from "./streaming";
-import { fileOfTypes } from "./fileoperations";
+import { fileOfTypes, parseLanguageFromFile } from "./fileoperations";
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 
@@ -98,8 +98,8 @@ app.get("/movie/:name", (req: Request, res: Response) => {
 
   const movie: MovieData = {
     name: req.params.name,
-    languages: languages.map((file) => {return {language: "Deutsch", path: path.join(relativePath(file.parentPath), file.name)}}),
-    subtitles: subtitles.map((file) => {return {language: "Deutsch", path: path.join(relativePath(file.parentPath), file.name)}}),
+    languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
+    subtitles: subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
     poster: path.join(relativePath(poster.parentPath), poster.name)
     
   }
@@ -143,7 +143,7 @@ app.get("/subtitle", (req: Request, res: Response)=>{
 
   let data: {data: string, language: string} = {data: "", language: ""};
   data["data"] = fs.readFileSync(absolutePath(file as string), {encoding: "utf-8"});
-  data["language"] = "Deutsch"; // going to be replaced by frontend refactor
+  data["language"] = parseLanguageFromFile(file as string); // going to be replaced by frontend refactor
   res.send(data);
 });
 
