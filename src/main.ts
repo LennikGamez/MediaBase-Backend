@@ -18,6 +18,10 @@ function relativePath(path: string): string{
   return path.replace(BASE_DIRECTORY, '');
 }
 
+function absolutePath(relpath: string): string{
+  return path.join(BASE_DIRECTORY, relpath);
+}
+
 const app: Application = express();
 
 
@@ -126,6 +130,21 @@ app.get("/stream", (req: Request, res: Response)=>{
 
   loadFile(path.join(BASE_DIRECTORY, file as string), req, res);
   
+});
+
+app.get("/subtitle", (req: Request, res: Response)=>{
+  const {file} = req.query;
+
+  if(!fileOfTypes(file as string, [".vtt"])){
+    res.status(403).send("This file format is not supported by this endpoint...");
+    return;
+  }
+  if(!fileSecurityCheck(file as string, res)) return;
+
+  let data: {data: string, language: string} = {data: "", language: ""};
+  data["data"] = fs.readFileSync(absolutePath(file as string), {encoding: "utf-8"});
+  data["language"] = "Deutsch"; // going to be replaced by frontend refactor
+  res.send(data);
 });
 
 
