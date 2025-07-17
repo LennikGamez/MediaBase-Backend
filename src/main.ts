@@ -1,4 +1,4 @@
-import { Application, Request, Response } from "express"; 
+import { Application } from "express"; 
 import express from "express";
 
 import { registerEpisodeEndpoint } from "./endpoints/episode"; 
