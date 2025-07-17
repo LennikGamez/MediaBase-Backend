@@ -35,7 +35,7 @@ export function getFilesFromDirectory(relativeDir: string){
     return{
       languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
       subtitles:  subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
-      posterPath
+      posterPath // could probably be removed since the frontend should've already fetched the poster in the library request, waiting for frontend implementation to decide
     }
 
 }
