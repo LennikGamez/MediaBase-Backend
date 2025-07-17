@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path"; 
 
 
-import { loadFile, streamFile } from "./streaming";
+import { loadFile } from "./streaming";
 import { fileOfTypes, parseLanguageFromFile } from "./fileoperations";
 
 const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
@@ -108,6 +108,60 @@ app.get("/movie/:name", (req: Request, res: Response) => {
   res.json(movie);
 });
 
+type Episode = {
+  name: string,
+  path: string
+}
+
+type Season = {
+  seasonNum: number,
+  episodes: Episode[]
+}
+
+
+app.get("/series/:name", (req: Request, res:Response)=>{
+  let seasons: Season[] = []
+  const SEASON_FOLDER_STRUTURE_PREFIX = "Staffel -";
+  const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, "Serien", req.params.name), {recursive: false, withFileTypes: true});
+  const seasonDirs = firstLevelFiles.filter((file)=> {
+    const stats = fs.statSync(path.join(file.parentPath, file.name));
+    return stats.isDirectory() && file.name.startsWith(SEASON_FOLDER_STRUTURE_PREFIX);
+  });
+
+  // loop according to ideal file structure
+  seasonDirs.forEach((seasonDir)=>{
+    const seasonNum = parseInt(seasonDir.name.replace(SEASON_FOLDER_STRUTURE_PREFIX, '').trim());
+    seasons.push({seasonNum, episodes: []});
+  
+    // episodes
+    const episodeDirs = fs.readdirSync(path.join(seasonDir.parentPath, seasonDir.name));
+    episodeDirs.forEach((episodeName)=>{
+      seasons.find(o => o.seasonNum == seasonNum)?.episodes.push({
+        name: episodeName,
+        path: path.join(seasonDir.parentPath, seasonDir.name, episodeName).replace(BASE_DIRECTORY, '')
+      });
+    });
+
+  });
+  res.json(seasons);
+});
+
+
+app.get("/episode", (req: Request, res: Response)=>{
+  const {dir} = req.query;
+
+  const allFiles = fs.readdirSync(absolutePath(dir as string), {withFileTypes: true, recursive: true});
+  const languages = allFiles.filter((file) => {return fileOfTypes(file.name, [".mp4"])});
+
+  const subtitles = allFiles.filter((file) => {return fileOfTypes(file.name, [".vtt"])});
+
+  const episodeData = {
+    languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
+    subtitles: subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
+  
+  }
+  res.json(episodeData);
+});
 
 function fileSecurityCheck(file: string, res: Response): boolean{
     if (!isFileInBaseDir(path.join(BASE_DIRECTORY, file as string))) {
