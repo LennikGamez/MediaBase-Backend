@@ -8,19 +8,19 @@ type MovieData = {
   name: string,
   languages: {language: string, path: string}[],
   subtitles: {language: string, path: string}[],
-  poster: string
+  posterPath: string
 }
 
 export function registerMovieEndpoint(appHandle: Application){
   appHandle.get("/movie/:name", (req: Request, res: Response) => {
     // get all files from directory recursively
-    let { languages, subtitles, poster } = getFilesFromDirectory(path.join(MOVIE_DIR, req.params.name))
+    let { languages, subtitles, posterPath } = getFilesFromDirectory(path.join(MOVIE_DIR, req.params.name))
 
     const movie: MovieData = {
       name: req.params.name,
       languages,
       subtitles, 
-      poster
+      posterPath
     }  
   
     res.json(movie);

@@ -27,10 +27,15 @@ export function getFilesFromDirectory(relativeDir: string){
     const poster = filterFiles(allFiles, [".png", ".jpg"])[0]
     // let poster = allFiles.filter((file) => {return fileOfTypes(file.name, [".png", ".jpg"])})[0];
 
+    let posterPath = "";
+    if(poster){
+        posterPath = path.join(relativePath(poster.parentPath), poster.name);
+    }
+
     return{
       languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
       subtitles:  subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
-      poster: path.join(relativePath(poster.parentPath), poster.name)
+      posterPath
     }
 
 }
