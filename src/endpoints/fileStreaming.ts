@@ -11,7 +11,7 @@ export function registerStreamingEndpoints(appHandle: Application){
     // Filme/Antigone/Antigone[GER].mp4
     const {file}= req.query;
 
-    if(!fileOfTypes(file as string, [".mp4"])) {
+    if(!fileOfTypes(file as string, [".mp4", ".mp3"])) {
       res.status(403).send("This file format is not supported by this endpoint...");
       return;
     }

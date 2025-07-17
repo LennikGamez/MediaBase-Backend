@@ -1,13 +1,13 @@
 import fs from "node:fs";
 import { Dirent } from "node:fs"; 
 import path from "node:path"; 
-import { BASE_DIRECTORY, fileOfTypes } from "./fileoperations";
+import { absolutePath, BASE_DIRECTORY, fileOfTypes } from "./fileoperations";
 
 import { parseLanguageFromFile, relativePath } from "./fileoperations";
 
 
 export function readAllFilesFromDirectory(relativeDir: string){
-    let allFiles = fs.readdirSync(path.join(BASE_DIRECTORY, relativeDir ), {recursive: true, withFileTypes: true});
+    let allFiles = fs.readdirSync(absolutePath(relativeDir), {recursive: true, withFileTypes: true});
     return allFiles.filter((file)=> {return !fs.statSync(path.join(file.parentPath, file.name)).isDirectory()});
 }
 export function filterFiles(allFiles: Dirent[], acceptedFileTypes: string[]){

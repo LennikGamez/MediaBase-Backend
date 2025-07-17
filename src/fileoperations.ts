@@ -5,7 +5,7 @@ import iso from "iso-639-1";
 export const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
 export const MOVIE_DIR = "Filme";
 export const SERIES_DIR = "Serien";
-export const AUDIO_SIR = "Hörbücher";
+export const AUDIO_DIR = "Hörbücher";
 
 export function fileOfTypes(absFilePath: string, filetypes: string[]){
   const extension = path.extname(absFilePath).toLowerCase();

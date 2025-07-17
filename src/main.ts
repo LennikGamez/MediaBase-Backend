@@ -6,6 +6,7 @@ import { registerSeriesEndpoint } from "./endpoints/series";
 import { registerMovieEndpoint } from "./endpoints/movie"; 
 import { registerStreamingEndpoints } from "./endpoints/fileStreaming"; 
 import { registerLibraryEndpoint } from "./endpoints/library"; 
+import { registerAudioEndpoint } from "./endpoints/audio";
 
 const app: Application = express();
 
@@ -19,6 +20,7 @@ registerSeriesEndpoint(app);
 registerMovieEndpoint(app);
 registerStreamingEndpoints(app);
 registerLibraryEndpoint(app);
+registerAudioEndpoint(app);
 
 
 const PORT = 3000
