@@ -1,8 +1,7 @@
 import { Application, Response, Request } from "express"; 
-import path from "node:path";
 import fs from "node:fs";
 
-import { BASE_DIRECTORY, fileOfTypes, fileSecurityCheck, parseLanguageFromFile, absolutePath } from "../helpers/fileoperations"; 
+import { fileOfTypes, fileSecurityCheck, parseLanguageFromFile, absolutePath } from "../helpers/fileoperations"; 
 import { loadFile } from "../streaming"; 
 
 export function registerStreamingEndpoints(appHandle: Application){
@@ -17,7 +16,7 @@ export function registerStreamingEndpoints(appHandle: Application){
     }
     if (!fileSecurityCheck(file as string, res)) return;
 
-    loadFile(path.join(BASE_DIRECTORY, file as string), req, res);
+    loadFile(absolutePath(file as string), req, res);
   
   });
 
@@ -46,7 +45,7 @@ export function registerStreamingEndpoints(appHandle: Application){
     }
     if(!fileSecurityCheck(file as string, res)) return;
 
-    res.sendFile(path.join(BASE_DIRECTORY, file as string))
+    res.sendFile(absolutePath(file as string));
   });
   
 }

@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { BASE_DIRECTORY } from "../helpers/fileoperations"; 
 import { Episode } from "./episode"; 
+import { relativePath, SERIES_DIR } from "../fileoperations";
 
 export type Season = {
   seasonNum: number,
@@ -14,7 +15,7 @@ export function registerSeriesEndpoint(appHandle: Application){
   appHandle.get("/series/:name", (req: Request, res:Response)=>{
     let seasons: Season[] = []
     const SEASON_FOLDER_STRUTURE_PREFIX = "Staffel -";
-    const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, "Serien", req.params.name), {recursive: false, withFileTypes: true});
+    const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, SERIES_DIR, req.params.name), {withFileTypes: true});
     const seasonDirs = firstLevelFiles.filter((file)=> {
       const stats = fs.statSync(path.join(file.parentPath, file.name));
       return stats.isDirectory() && file.name.startsWith(SEASON_FOLDER_STRUTURE_PREFIX);
@@ -30,7 +31,7 @@ export function registerSeriesEndpoint(appHandle: Application){
       episodeDirs.forEach((episodeName)=>{
         seasons.find(o => o.seasonNum == seasonNum)?.episodes.push({
           name: episodeName,
-          path: path.join(seasonDir.parentPath, seasonDir.name, episodeName).replace(BASE_DIRECTORY, '')
+          path: relativePath(path.join(seasonDir.parentPath, seasonDir.name, episodeName))
         });
       });
 

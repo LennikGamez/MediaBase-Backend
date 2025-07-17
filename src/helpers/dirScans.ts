@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { Dirent } from "node:fs"; 
 import path from "node:path"; 
-import { absolutePath, BASE_DIRECTORY, fileOfTypes } from "./fileoperations";
+import { absolutePath, fileOfTypes } from "./fileoperations";
 
 import { parseLanguageFromFile, relativePath } from "./fileoperations";
 
