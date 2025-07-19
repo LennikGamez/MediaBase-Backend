@@ -18,3 +18,7 @@ export function mapStringToMediaType(str: string): MediaTypes{
       return MediaTypes.UNDEFINED;
   }
 }
+export function enumToString(e: MediaTypes){
+  const types = ["Filme", "Serien", "Hörbücher"];
+  return types[e];
+}

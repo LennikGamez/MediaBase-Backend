@@ -35,18 +35,5 @@ export function registerStreamingEndpoints(appHandle: Application){
     res.send(data);
   });
 
-
-  appHandle.get("/poster", (req: Request, res: Response) => {
-    const {file} = req.query;
-
-    if(!fileOfTypes(file as string, [".png", ".jpg"])) {
-      res.status(403).send("This file format is not supported by this endpoint...");
-      return;
-    }
-    if(!fileSecurityCheck(file as string, res)) return;
-
-    res.sendFile(absolutePath(file as string));
-  });
-  
 }
 

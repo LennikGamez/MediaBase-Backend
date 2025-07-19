@@ -36,6 +36,6 @@ export function registerSeriesEndpoint(appHandle: Application){
       });
 
     });
-    res.json(seasons);
+    res.json({seasons});
   });
 }
