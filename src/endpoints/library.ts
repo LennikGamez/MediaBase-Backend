@@ -9,8 +9,7 @@ import { relativePath } from "../fileoperations";
 
 export type LibEntry = {
   name: string,
-  type: MediaTypes,
-  poster: string
+  type: MediaTypes
 }
 export function registerLibraryEndpoint(appHandle: Application){
   appHandle.get("/library", (_req: Request, res: Response) => {
@@ -25,13 +24,10 @@ export function registerLibraryEndpoint(appHandle: Application){
 
       const secondLevel = fs.readdirSync(joinedPath);
       secondLevel.forEach((media) => {
-        const thirdLevel = fs.readdirSync(path.join(joinedPath, media), {withFileTypes: true});
-        const poster = filterFiles(thirdLevel, [".png", ".jpg"])[0];
-
+        // insert the check if the folder is a group indicated by [NAME]
         lib.push({
           name: media,
           type: mediaType,
-          poster: relativePath(path.join(poster.parentPath, poster.name))
         })
       })
 
