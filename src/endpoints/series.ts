@@ -4,7 +4,12 @@ import path from "node:path";
 
 import { BASE_DIRECTORY } from "../helpers/fileoperations"; 
 import { Episode } from "./episode"; 
-import { relativePath, SERIES_DIR } from "../fileoperations";
+import { readDescription, relativePath, SERIES_DIR } from "../fileoperations";
+
+export type Series = {
+  description: string,
+  seasons: Season[]
+}
 
 export type Season = {
   seasonNum: number,
@@ -16,6 +21,11 @@ export function registerSeriesEndpoint(appHandle: Application){
     let seasons: Season[] = []
     const SEASON_FOLDER_STRUTURE_PREFIX = "Staffel -";
     const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, SERIES_DIR, req.params.name), {withFileTypes: true});
+
+    // read the description on the first level
+    const descriptionFile = firstLevelFiles.filter((file)=> file.name.endsWith(".txt"))[0];
+    let description = readDescription(descriptionFile);
+
     const seasonDirs = firstLevelFiles.filter((file)=> {
       const stats = fs.statSync(path.join(file.parentPath, file.name));
       return stats.isDirectory() && file.name.startsWith(SEASON_FOLDER_STRUTURE_PREFIX);
@@ -36,6 +46,6 @@ export function registerSeriesEndpoint(appHandle: Application){
       });
 
     });
-    res.json({seasons});
+    res.json({description, seasons});
   });
 }

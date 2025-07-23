@@ -1,5 +1,6 @@
 import { Response } from "express"; 
 import path from "node:path";
+import fs, { Dirent } from "node:fs";
 import iso from "iso-639-1";
 
 export const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
@@ -44,4 +45,12 @@ export function fileSecurityCheck(file: string, res: Response): boolean{
       return false;
   };
   return true;
+}
+
+export function readDescription(descriptionFile: Dirent | undefined): string{
+  let description = "";
+  if (descriptionFile){
+    description = fs.readFileSync(path.join(descriptionFile.parentPath, descriptionFile.name), {encoding: "utf8"});
+  }
+  return description;
 }

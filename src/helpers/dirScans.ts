@@ -4,6 +4,7 @@ import path from "node:path";
 import { absolutePath, fileOfTypes } from "./fileoperations";
 
 import { parseLanguageFromFile, relativePath } from "./fileoperations";
+import { readDescription } from "../fileoperations";
 
 
 export function readAllFilesFromDirectory(relativeDir: string){
@@ -24,8 +25,11 @@ export function getFilesFromDirectory(relativeDir: string){
     const subtitles = filterFiles(allFiles, [".vtt"]);
     // let subtitles = allFiles.filter((file) => {return fileOfTypes(file.name, [".vtt"])});
 
-    const poster = filterFiles(allFiles, [".png", ".jpg"])[0]
+    const poster = filterFiles(allFiles, [".png", ".jpg"])[0];
     // let poster = allFiles.filter((file) => {return fileOfTypes(file.name, [".png", ".jpg"])})[0];
+
+    const descriptionFile = filterFiles(allFiles, [".txt"])[0];
+    let description = readDescription(descriptionFile);
 
     let posterPath = "";
     if(poster){
@@ -33,9 +37,10 @@ export function getFilesFromDirectory(relativeDir: string){
     }
 
     return{
-      languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
-      subtitles:  subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
-      posterPath // could probably be removed since the frontend should've already fetched the poster in the library request, waiting for frontend implementation to decide
-    }
+          languages: languages.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
+          subtitles:  subtitles.map((file) => {return {language: parseLanguageFromFile(file.name), path: path.join(relativePath(file.parentPath), file.name)}}),
+          posterPath, // could probably be removed since the frontend should've already fetched the poster in the library request, waiting for frontend implementation to decide
+          description  
+      }
 
 }
