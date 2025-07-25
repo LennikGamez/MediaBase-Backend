@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { BASE_DIRECTORY } from "../helpers/fileoperations"; 
 import { Episode } from "./episode"; 
-import { readDescription, relativePath, SERIES_DIR } from "../fileoperations";
+import { fileSecurityCheck, readDescription, relativePath, SERIES_DIR } from "../fileoperations";
 
 export type Series = {
   description: string,
@@ -17,10 +17,14 @@ export type Season = {
 }
 
 export function registerSeriesEndpoint(appHandle: Application){
-  appHandle.get("/series/:name", (req: Request, res:Response)=>{
+  appHandle.get("/series/{*path}", (req: Request, res:Response)=>{
+    const pathToSeries = (req.params.path as unknown as string[]).join("/");
+    if(!fileSecurityCheck(path.join(SERIES_DIR, pathToSeries), res)){
+      return;
+    }
     let seasons: Season[] = []
     const SEASON_FOLDER_STRUTURE_PREFIX = "Staffel -";
-    const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, SERIES_DIR, req.params.name), {withFileTypes: true});
+    const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, SERIES_DIR, pathToSeries), {withFileTypes: true});
 
     // read the description on the first level
     const descriptionFile = firstLevelFiles.filter((file)=> file.name.endsWith(".txt"))[0];

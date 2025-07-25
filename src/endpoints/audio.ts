@@ -2,7 +2,7 @@ import path from "path";
 import { Application, Request, Response } from "express";
 
 import { readAllFilesFromDirectory, filterFiles } from "../helpers/dirScans";
-import { AUDIO_DIR, readDescription, relativePath } from "../fileoperations";
+import { AUDIO_DIR, fileSecurityCheck, readDescription, relativePath } from "../fileoperations";
 
 type AudioData = {
   description: string,
@@ -10,9 +10,13 @@ type AudioData = {
 }
 
 export function registerAudioEndpoint(appHandle: Application){
-  appHandle.get("/audio/:name", (req: Request, res: Response)=>{
+  appHandle.get("/audio/{*path}", (req: Request, res: Response)=>{
     // get all files for this AudioBook
-    const allFiles = readAllFilesFromDirectory(path.join(AUDIO_DIR, req.params.name));
+    const pathToAudio = (req.params.path as unknown as string[]).join("/");
+    if(!fileSecurityCheck(path.join(AUDIO_DIR, pathToAudio), res)){
+      return;
+    }
+    const allFiles = readAllFilesFromDirectory(path.join(AUDIO_DIR, pathToAudio));
 
     const audioFiles = filterFiles(allFiles, [".mp3"]);
     const descriptionFile = filterFiles(allFiles, [".txt"])[0];
