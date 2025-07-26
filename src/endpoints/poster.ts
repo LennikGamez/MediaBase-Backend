@@ -6,8 +6,12 @@ import { enumToString } from "../helpers/util";
 
 export function registerPosterPathEndpoint(appHandle: Application){
   appHandle.get("/poster/:name/:type", (req: Request, res: Response)=>{
+    const group = req.query.group as string || "";
     const type = parseInt(req.params.type);
-    const name = req.params.name as string;
+    let name = req.params.name as string;
+    if (group){
+      name = group + "/" + name;
+    }
     const firstLevel = readdirSync(join(absolutePath(enumToString(type)), name), {withFileTypes: true});
     const posterFile: Dirent<string> | undefined = firstLevel.find((file)=> fileOfTypes(file.name, [".png", ".jpg"]));
 
