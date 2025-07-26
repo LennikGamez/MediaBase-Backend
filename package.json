@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc && node --env-file=.env dist/main.js"
+    "dev": "tsc && cp -R src/assets dist/assets && node --env-file=.env dist/main.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

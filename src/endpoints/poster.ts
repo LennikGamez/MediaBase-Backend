@@ -16,7 +16,7 @@ export function registerPosterPathEndpoint(appHandle: Application){
     const posterFile: Dirent<string> | undefined = firstLevel.find((file)=> fileOfTypes(file.name, [".png", ".jpg"]));
 
     if(!posterFile){
-      res.status(404).send("No poster was found!");
+      res.sendFile(process.cwd() + "/dist/assets/default.png");
       return;
     }
 
