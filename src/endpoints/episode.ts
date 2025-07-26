@@ -1,6 +1,7 @@
 import {Application, Request, Response} from "express";
 
-import { getFilesFromDirectory } from "../helpers/dirScans";
+import { getFilesFromDirectory, readAllFilesFromDirectory } from "../helpers/dirScans";
+import { readDescription } from "../fileoperations";
 
 export type Episode = {
   name: string,
@@ -9,6 +10,14 @@ export type Episode = {
 
 
 export function registerEpisodeEndpoint(appHandle: Application){
+  appHandle.get("/episode-description", (req: Request, res: Response)=>{
+    const {dir} = req.query;
+
+    const allFiles = readAllFilesFromDirectory(dir as string);
+    const descriptionFile = allFiles.filter(file=>file.name.endsWith(".txt"))[0];
+    const description = readDescription(descriptionFile);
+    res.json(description);
+  });
   
   appHandle.get("/episode", (req: Request, res: Response)=>{
     const {dir} = req.query;
