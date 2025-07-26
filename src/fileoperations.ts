@@ -17,6 +17,10 @@ export function fileOfTypes(absFilePath: string, filetypes: string[]){
 export function parseLanguageFromFile(absFilePath: string): string{
   
   const filename = path.basename(absFilePath);
+
+  if(!filename.includes("[") || !filename.includes("]")){
+    return filename;
+  }
   const languageCode = filename.split('[')[1].split(']')[0].toLowerCase();
   const language = iso.getNativeName(languageCode);
 
