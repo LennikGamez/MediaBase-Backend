@@ -2,7 +2,8 @@ import path from "path";
 import { Application, Request, Response } from "express";
 
 import { readAllFilesFromDirectory, filterFiles } from "../helpers/dirScans";
-import { AUDIO_DIR, fileSecurityCheck, readDescription, relativePath } from "../fileoperations";
+import { AUDIO_DIR, fileSecurityCheck, readDescription, relativePath } from "../helpers/fileoperations";
+import { AUDIO_FORMATS, DESCRIPTION_FORMATS } from "../helpers/fileoperations";
 
 type AudioData = {
   description: string,
@@ -18,8 +19,8 @@ export function registerAudioEndpoint(appHandle: Application){
     }
     const allFiles = readAllFilesFromDirectory(path.join(AUDIO_DIR, pathToAudio));
 
-    const audioFiles = filterFiles(allFiles, [".mp3"]);
-    const descriptionFile = filterFiles(allFiles, [".txt"])[0];
+    const audioFiles = filterFiles(allFiles, AUDIO_FORMATS);
+    const descriptionFile = filterFiles(allFiles, DESCRIPTION_FORMATS)[0];
 
     let description = readDescription(descriptionFile);
       

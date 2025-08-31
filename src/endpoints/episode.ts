@@ -1,7 +1,8 @@
 import {Application, Request, Response} from "express";
 
 import { getFilesFromDirectory, readAllFilesFromDirectory } from "../helpers/dirScans";
-import { readDescription } from "../fileoperations";
+import { readDescription, DESCRIPTION_FORMATS } from "../helpers/fileoperations";
+import { extname } from "node:path";
 
 export type Episode = {
   name: string,
@@ -14,7 +15,7 @@ export function registerEpisodeEndpoint(appHandle: Application){
     const {dir} = req.query;
 
     const allFiles = readAllFilesFromDirectory(dir as string);
-    const descriptionFile = allFiles.filter(file=>file.name.endsWith(".txt"))[0];
+    const descriptionFile = allFiles.filter(file=>DESCRIPTION_FORMATS.includes(extname(file.name)))[0];
     const description = readDescription(descriptionFile);
     res.json(description);
   });

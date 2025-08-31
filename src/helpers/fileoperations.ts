@@ -1,8 +1,19 @@
 import { Response } from "express"; 
 import path from "node:path";
 import iso from "iso-639-1";
+import fs, { Dirent } from "node:fs";
+
+export const VIDEO_FORMATS = [".mp4", ".webm"];
+export const AUDIO_FORMATS = [".mp3"];
+export const SUBTITLE_FORMATS = [".vtt"];
+export const DESCRIPTION_FORMATS = [".txt"];
+export const POSTER_FORMATS = [".png", ".jpg", ".jpeg"];
 
 export const BASE_DIRECTORY = process.env.BASE_DIRECTORY as string;
+
+export const MOVIE_DIR = "Filme";
+export const SERIES_DIR = "Serien";
+export const AUDIO_DIR = "Hörbücher";
 
 export function fileOfTypes(absFilePath: string, filetypes: string[]){
   const extension = path.extname(absFilePath).toLowerCase();
@@ -44,4 +55,12 @@ export function fileSecurityCheck(file: string, res: Response): boolean{
       return false;
   };
   return true;
+}
+
+export function readDescription(descriptionFile: Dirent | undefined): string{
+  let description = "";
+  if (descriptionFile){
+    description = fs.readFileSync(path.join(descriptionFile.parentPath, descriptionFile.name), {encoding: "utf8"});
+  }
+  return description;
 }

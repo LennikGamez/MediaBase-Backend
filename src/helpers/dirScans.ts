@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import { Dirent } from "node:fs"; 
 import path from "node:path"; 
-import { absolutePath, fileOfTypes } from "./fileoperations";
+import { absolutePath, DESCRIPTION_FORMATS, fileOfTypes, SUBTITLE_FORMATS, VIDEO_FORMATS } from "./fileoperations";
 
 import { parseLanguageFromFile, relativePath } from "./fileoperations";
-import { readDescription } from "../fileoperations";
+import { readDescription } from "../helpers/fileoperations";
 
 
 export function readAllFilesFromDirectory(relativeDir: string){
@@ -19,13 +19,13 @@ export function getFilesFromDirectory(relativeDir: string){
     // get all files from directory recursively
     const allFiles = readAllFilesFromDirectory(relativeDir);
 
-    const languages = filterFiles(allFiles, [".mp4"]);
+    const languages = filterFiles(allFiles, VIDEO_FORMATS);
     // let languages = allFiles.filter((file) => {return fileOfTypes(file.name, [".mp4"])});
 
-    const subtitles = filterFiles(allFiles, [".vtt"]);
+    const subtitles = filterFiles(allFiles, SUBTITLE_FORMATS);
     // let subtitles = allFiles.filter((file) => {return fileOfTypes(file.name, [".vtt"])});
 
-    const descriptionFile = filterFiles(allFiles, [".txt"])[0];
+    const descriptionFile = filterFiles(allFiles, DESCRIPTION_FORMATS)[0];
     let description = readDescription(descriptionFile);
 
     return{

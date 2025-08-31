@@ -1,7 +1,7 @@
 import { Application, Response, Request } from "express"; 
 import fs from "node:fs";
 
-import { fileOfTypes, fileSecurityCheck, parseLanguageFromFile, absolutePath } from "../helpers/fileoperations"; 
+import { fileOfTypes, fileSecurityCheck, parseLanguageFromFile, absolutePath, VIDEO_FORMATS, AUDIO_FORMATS, SUBTITLE_FORMATS } from "../helpers/fileoperations"; 
 import { loadFile } from "../streaming"; 
 
 export function registerStreamingEndpoints(appHandle: Application){
@@ -10,7 +10,7 @@ export function registerStreamingEndpoints(appHandle: Application){
     // Filme/Antigone/Antigone[GER].mp4
     const {file}= req.query;
 
-    if(!fileOfTypes(file as string, [".mp4", ".mp3"])) {
+    if(!fileOfTypes(file as string, VIDEO_FORMATS.concat(AUDIO_FORMATS))) {
       res.status(403).send("This file format is not supported by this endpoint...");
       return;
     }
@@ -23,7 +23,7 @@ export function registerStreamingEndpoints(appHandle: Application){
   appHandle.get("/subtitle", (req: Request, res: Response)=>{
     const {file} = req.query;
 
-    if(!fileOfTypes(file as string, [".vtt"])){
+    if(!fileOfTypes(file as string, SUBTITLE_FORMATS)){
       res.status(403).send("This file format is not supported by this endpoint...");
       return;
     }

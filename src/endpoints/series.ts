@@ -2,9 +2,9 @@ import { Application, Response, Request } from "express";
 import fs from "node:fs";
 import path from "node:path";
 
-import { BASE_DIRECTORY } from "../helpers/fileoperations"; 
+import { BASE_DIRECTORY, DESCRIPTION_FORMATS } from "../helpers/fileoperations"; 
 import { Episode } from "./episode"; 
-import { fileSecurityCheck, readDescription, relativePath, SERIES_DIR } from "../fileoperations";
+import { fileSecurityCheck, readDescription, relativePath, SERIES_DIR } from "../helpers/fileoperations";
 
 export type Series = {
   description: string,
@@ -27,7 +27,7 @@ export function registerSeriesEndpoint(appHandle: Application){
     const firstLevelFiles = fs.readdirSync(path.join(BASE_DIRECTORY, SERIES_DIR, pathToSeries), {withFileTypes: true});
 
     // read the description on the first level
-    const descriptionFile = firstLevelFiles.filter((file)=> file.name.endsWith(".txt"))[0];
+    const descriptionFile = firstLevelFiles.filter((file)=> DESCRIPTION_FORMATS.includes(path.extname(file.name)))[0];
     let description = readDescription(descriptionFile);
 
     const seasonDirs = firstLevelFiles.filter((file)=> {
