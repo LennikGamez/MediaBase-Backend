@@ -2,7 +2,7 @@ import { Application, Response, Request} from "express";
 import path from "node:path";
 
 import { getFilesFromDirectory } from "../helpers/dirScans";
-import { fileSecurityCheck, MOVIE_DIR } from "../fileoperations";
+import { fileSecurityCheck, MOVIE_DIR } from "../helpers/fileoperations";
 
 type MovieData = {
   languages: {language: string, path: string}[],

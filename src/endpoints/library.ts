@@ -5,7 +5,7 @@ import path from "node:path";
 import { absolutePath, BASE_DIRECTORY } from "../helpers/fileoperations"; 
 import { MediaTypes, enumToString, mapStringToMediaType } from "../helpers/util"; 
 import { filterFiles } from "../helpers/dirScans";
-import { relativePath } from "../fileoperations";
+import { relativePath } from "../helpers/fileoperations";
 
 export type LibEntry = {
   name: string,
